@@ -17,11 +17,18 @@ from apps.scans.models import Blacklist
 logger = logging.getLogger(__name__)
 
 class CreateReportView(APIView):
-    """إنشاء بلاغ جديد"""
-    
     def post(self, request):
+        print("\n" + "="*50)
+        print("📥 استقبال بلاغ جديد")
+        print("="*50)
+        print(f"المستخدم: {request.user if request.user.is_authenticated else 'غير مسجل'}")
+        print(f"البيانات المستقبلة: {request.data}")
+        
         serializer = CreateReportSerializer(data=request.data)
+        
         if serializer.is_valid():
+            print("✅ البيانات صحيحة")
+            
             # إنشاء البلاغ
             report = Report(
                 user=request.user if request.user.is_authenticated else None,
@@ -40,6 +47,8 @@ class CreateReportView(APIView):
                 report.reporter_name = 'مستخدم مجهول'
             
             report.save()
+            print(f"✅ تم حفظ البلاغ برقم: {report.tracking_number}")
+            print(f"📊 حالة البلاغ: {report.status}")
             
             return Response({
                 'success': True,
@@ -47,6 +56,8 @@ class CreateReportView(APIView):
                 'report': ReportSerializer(report).data
             }, status=status.HTTP_201_CREATED)
         
+        print("❌ أخطاء في البيانات:")
+        print(serializer.errors)
         return Response({
             'success': False,
             'errors': serializer.errors

@@ -24,7 +24,7 @@ class Migration(migrations.Migration):
                 ('id', models.UUIDField(default=uuid.uuid4, editable=False, primary_key=True, serialize=False)),
                 ('email', models.EmailField(max_length=254, unique=True, verbose_name='البريد الإلكتروني')),
                 ('name', models.CharField(max_length=255, verbose_name='الاسم الكامل')),
-                ('profile_image', models.ImageField(blank=True, null=True, upload_to=apps.accounts.models.user_profile_image_path, verbose_name='الصورة الشخصية')),
+                ('profile_image', models.ImageField(blank=True, null=True, upload_to='profile_images/', verbose_name='الصورة الشخصية')),
                 ('scanned_links', models.IntegerField(default=0, verbose_name='الروابط الممسوحة')),
                 ('detected_threats', models.IntegerField(default=0, verbose_name='التهديدات المكتشفة')),
                 ('accuracy_rate', models.FloatField(default=0.0, verbose_name='نسبة الدقة')),
