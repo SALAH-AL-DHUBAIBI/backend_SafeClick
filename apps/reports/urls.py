@@ -13,4 +13,8 @@ urlpatterns = [
     path('admin/list/', views.AdminReportListView.as_view(), name='admin-report-list'),
     path('admin/<uuid:pk>/update-status/', views.UpdateReportStatusView.as_view(), name='update-report-status'),
     path('admin/stats/', views.ReportStatsView.as_view(), name='report-stats'),
+    
+    # حذف البلاغات (Soft Delete)
+    path('<uuid:pk>/delete-soft/', views.DeleteReportSoftView.as_view(), name='report-delete-soft'),
+    path('clear-all-soft/', views.DeleteAllReportsSoftView.as_view(), name='report-clear-all-soft'),
 ]
