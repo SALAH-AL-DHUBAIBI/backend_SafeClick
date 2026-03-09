@@ -34,6 +34,7 @@ class Scan(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     timestamp = models.DateTimeField(auto_now_add=True) # keeping for backward compatibility
     updated_at = models.DateTimeField(auto_now=True)
+    deleted_at = models.DateTimeField(null=True, blank=True)
     
     class Meta:
         ordering = ['-created_at']

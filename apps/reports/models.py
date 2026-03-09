@@ -54,6 +54,7 @@ class Report(models.Model):
     updated_at = models.DateTimeField(auto_now=True, verbose_name='آخر تحديث')
     reviewed_at = models.DateTimeField(null=True, blank=True, verbose_name='تاريخ المراجعة')
     resolved_at = models.DateTimeField(null=True, blank=True, verbose_name='تاريخ الحل')
+    deleted_at = models.DateTimeField(null=True, blank=True, verbose_name='تاريخ الحذف من قبل المستخدم')
     
     class Meta:
         verbose_name = 'بلاغ'

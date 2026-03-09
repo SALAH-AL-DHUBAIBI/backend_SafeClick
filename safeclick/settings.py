@@ -29,6 +29,7 @@ GOOGLE_SAFE_BROWSING_API_KEY = os.getenv('GOOGLE_SAFE_BROWSING_API_KEY', '')
 
 # ========== التطبيقات ==========
 INSTALLED_APPS = [
+    'jazzmin',  # Professional UI theme
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -240,8 +241,14 @@ CSRF_TRUSTED_ORIGINS = [
 VIRUSTOTAL_API_KEY = os.getenv('VIRUSTOTAL_API_KEY', '')
 GOOGLE_SAFE_BROWSING_API_KEY = os.getenv('GOOGLE_SAFE_BROWSING_API_KEY', '')
 
-# ========== Email Settings (للتطوير) ==========
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'  # يطبع الإيميلات في الكونسول
+# ========== Email Settings (Gmail SMTP) ==========
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'salahaldbyby00@gmail.com'
+EMAIL_HOST_PASSWORD = 'xhadmxaqrjabrovw' # App password
+DEFAULT_FROM_EMAIL = 'SafeClick <salahaldbyby00@gmail.com>'
 
 # ========== Logging ==========
 LOGS_DIR = BASE_DIR / 'logs'
@@ -283,4 +290,70 @@ LOGGING = {
             'propagate': True,
         },
     },
+}
+
+# ========== Jazzmin Admin UI Settings ==========
+JAZZMIN_SETTINGS = {
+    "site_title": "SafeClick Admin",
+    "site_header": "SafeClick",
+    "site_brand": "SafeClick Dashboard",
+    "welcome_sign": "مركز إدارة SafeClick للتأمين الرقمي",
+    "copyright": "SafeClick Ltd",
+    "search_model": ["accounts.User", "scans.Scan"],
+    "show_ui_builder": False,
+    
+    "topmenu_links": [
+        {"name": "Home",  "url": "admin:index", "permissions": ["auth.view_user"]},
+        {"name": "Support", "url": "https://github.com/", "new_window": True},
+    ],
+    
+    # Sections to display and custom icons
+    "icons": {
+        "accounts.User": "fas fa-users",
+        "scans.Scan": "fas fa-shield-alt",
+        "scans.Link": "fas fa-link",
+        "scans.Blacklist": "fas fa-ban",
+        "reports.Report": "fas fa-flag",
+        "reports.ReportComment": "fas fa-comments",
+        "auth.Group": "fas fa-users-cog",
+    },
+    
+    # Custom dashboard config
+    "default_icon_parents": "fas fa-chevron-circle-right",
+    "default_icon_children": "fas fa-circle",
+    "related_modal_active": False,
+    "custom_css": None,
+    "custom_js": None,
+}
+
+JAZZMIN_UI_TWEAKS = {
+    "navbar_small_text": False,
+    "footer_small_text": False,
+    "body_small_text": False,
+    "brand_small_text": False,
+    "brand_colour": "navbar-dark",
+    "accent": "accent-primary",
+    "navbar": "navbar-dark",
+    "no_navbar_border": False,
+    "navbar_fixed": True,
+    "layout_boxed": False,
+    "footer_fixed": False,
+    "sidebar_fixed": True,
+    "sidebar": "sidebar-dark-primary",
+    "sidebar_nav_small_text": False,
+    "sidebar_disable_expand": False,
+    "sidebar_nav_child_indent": True,
+    "sidebar_nav_compact_style": False,
+    "sidebar_nav_legacy_style": False,
+    "sidebar_nav_flat_style": False,
+    "theme": "darkly", # A modern dark theme that fits security apps
+    "dark_mode_theme": "darkly",
+    "button_classes": {
+        "primary": "btn-outline-primary",
+        "secondary": "btn-outline-secondary",
+        "info": "btn-info",
+        "warning": "btn-warning",
+        "danger": "btn-danger",
+        "success": "btn-success"
+    }
 }
