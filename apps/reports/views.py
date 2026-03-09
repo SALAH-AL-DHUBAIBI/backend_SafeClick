@@ -91,7 +91,10 @@ class MyReportsView(generics.ListAPIView):
     permission_classes = [IsAuthenticated]
     
     def get_queryset(self):
-        return Report.objects.filter(user=self.request.user).order_by('-created_at')
+        return Report.objects.filter(
+            user=self.request.user,
+            deleted_at__isnull=True
+        ).order_by('-created_at')
     
     def list(self, request, *args, **kwargs):
         queryset = self.get_queryset()
@@ -284,4 +287,35 @@ class ReportStatsView(APIView):
                 'daily_stats': list(daily),
                 'confirmed_threats': reports.filter(is_confirmed_threat=True).count(),
             }
+        })
+class DeleteReportSoftView(APIView):
+    """??? ???? (Soft Delete)"""
+    permission_classes = [IsAuthenticated]
+    
+    def post(self, request, pk):
+        from django.shortcuts import get_object_or_404
+        from django.utils import timezone
+        report = get_object_or_404(Report, pk=pk, user=request.user)
+        report.deleted_at = timezone.now()
+        report.save()
+        
+        return Response({
+            'success': True,
+            'message': '?? ??? ?????? ?? ????? ?????'
+        })
+
+class DeleteAllReportsSoftView(APIView):
+    """??? ???? ???????? (Soft Delete)"""
+    permission_classes = [IsAuthenticated]
+    
+    def post(self, request):
+        from django.utils import timezone
+        count = Report.objects.filter(
+            user=request.user, 
+            deleted_at__isnull=True
+        ).update(deleted_at=timezone.now())
+        
+        return Response({
+            'success': True,
+            'message': f'?? ??? {count} ???? ?? ????? ?????'
         })

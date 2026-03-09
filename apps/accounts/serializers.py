@@ -36,5 +36,30 @@ class RegisterSerializer(serializers.ModelSerializer):
         return user
 
 class LoginSerializer(serializers.Serializer):
-    email = serializers.EmailField()
+    username = serializers.CharField()
     password = serializers.CharField()
+
+class SendOTPSerializer(serializers.Serializer):
+    name = serializers.CharField(max_length=255)
+    email = serializers.EmailField()
+    password = serializers.CharField(write_only=True)
+    password_confirm = serializers.CharField(write_only=True, required=False)
+    
+    def validate(self, data):
+        if 'password_confirm' in data and data['password'] != data['password_confirm']:
+            raise serializers.ValidationError("كلمة المرور غير متطابقة")
+        if len(data['password']) < 6:
+            raise serializers.ValidationError("كلمة المرور يجب أن تكون 6 أحرف على الأقل")
+        if User.objects.filter(email=data['email']).exists():
+            raise serializers.ValidationError("البريد الإلكتروني مستخدم بالفعل")
+        # Also check if another user has the same name since we login by name now
+        if User.objects.filter(name=data['name']).exists():
+            raise serializers.ValidationError("اسم المستخدم مستخدم بالفعل")
+        return data
+
+class VerifyOTPSerializer(serializers.Serializer):
+    email = serializers.EmailField()
+    otp = serializers.CharField(max_length=6)
+
+class ResendOTPSerializer(serializers.Serializer):
+    email = serializers.EmailField()

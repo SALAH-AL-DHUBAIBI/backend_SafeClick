@@ -70,7 +70,7 @@ class ScanHistoryView(APIView):
         # Use .only() to avoid loading heavy JSON fields; limit to 50 most recent.
         scans = (
             Scan.objects
-            .filter(user=request.user)
+            .filter(user=request.user, deleted_at__isnull=True)
             .only('id', 'url', 'result', 'safe', 'risk_score', 'created_at', 'domain', 'threats_count')
             .order_by('-created_at')[:50]
         )
@@ -80,4 +80,36 @@ class ScanHistoryView(APIView):
             'success': True,
             'history': data,
             'count': len(data),
+        })
+
+class DeleteScanSoftView(APIView):
+    """حذف فحص من السجل (Soft Delete)"""
+    permission_classes = [IsAuthenticated]
+    
+    def post(self, request, pk):
+        from django.shortcuts import get_object_or_404
+        from django.utils import timezone
+        scan = get_object_or_404(Scan, pk=pk, user=request.user)
+        scan.deleted_at = timezone.now()
+        scan.save()
+        
+        return Response({
+            'success': True,
+            'message': 'تم حذف الفحص من السجل بنجاح'
+        })
+
+class DeleteAllScansSoftView(APIView):
+    """حذف جميع الفحوصات (Soft Delete)"""
+    permission_classes = [IsAuthenticated]
+    
+    def post(self, request):
+        from django.utils import timezone
+        count = Scan.objects.filter(
+            user=request.user, 
+            deleted_at__isnull=True
+        ).update(deleted_at=timezone.now())
+        
+        return Response({
+            'success': True,
+            'message': f'تم حذف {count} فحص من السجل بنجاح'
         })

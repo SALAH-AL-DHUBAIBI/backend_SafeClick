@@ -1,7 +1,9 @@
 # apps/accounts/models.py
 import uuid
+from datetime import timedelta
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
+from django.contrib.auth.hashers import make_password
 from django.utils import timezone
 
 class UserManager(BaseUserManager):
@@ -52,3 +54,41 @@ class User(AbstractBaseUser, PermissionsMixin):
     
     def __str__(self):
         return self.email
+
+def get_otp_expiry():
+    return timezone.now() + timedelta(minutes=5)
+
+class EmailVerification(models.Model):
+    PURPOSE_CHOICES = [
+        ('register', 'Register'),
+        ('reset', 'Password Reset'),
+    ]
+    
+    email = models.EmailField(unique=True)
+    name = models.CharField(max_length=255, blank=True)
+    password = models.CharField(max_length=128, blank=True)
+    otp = models.CharField(max_length=6)
+    purpose = models.CharField(max_length=20, choices=PURPOSE_CHOICES, default='register')
+    
+    # Security fields
+    otp_attempts = models.IntegerField(default=0)
+    last_request_at = models.DateTimeField(auto_now_add=True)
+    request_count = models.IntegerField(default=1) 
+    lockout_until = models.DateTimeField(null=True, blank=True)
+    
+    created_at = models.DateTimeField(auto_now_add=True)
+    expires_at = models.DateTimeField(default=get_otp_expiry)
+
+    def set_password(self, raw_password):
+        self.password = make_password(raw_password)
+
+    def __str__(self):
+        return f"Verification ({self.purpose}) for {self.email}"
+
+class IPAttempt(models.Model):
+    ip_address = models.GenericIPAddressField()
+    count = models.IntegerField(default=0)
+    last_attempt_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return f"{self.ip_address}: {self.count} attempts"

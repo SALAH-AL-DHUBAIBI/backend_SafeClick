@@ -241,8 +241,14 @@ CSRF_TRUSTED_ORIGINS = [
 VIRUSTOTAL_API_KEY = os.getenv('VIRUSTOTAL_API_KEY', '')
 GOOGLE_SAFE_BROWSING_API_KEY = os.getenv('GOOGLE_SAFE_BROWSING_API_KEY', '')
 
-# ========== Email Settings (للتطوير) ==========
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'  # يطبع الإيميلات في الكونسول
+# ========== Email Settings (Gmail SMTP) ==========
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'salahaldbyby00@gmail.com'
+EMAIL_HOST_PASSWORD = 'xhadmxaqrjabrovw' # App password
+DEFAULT_FROM_EMAIL = 'SafeClick <salahaldbyby00@gmail.com>'
 
 # ========== Logging ==========
 LOGS_DIR = BASE_DIR / 'logs'
