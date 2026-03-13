@@ -251,9 +251,9 @@ EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
-EMAIL_HOST_USER = 'salahaldbyby00@gmail.com'
-EMAIL_HOST_PASSWORD = 'xhadmxaqrjabrovw' # App password
-DEFAULT_FROM_EMAIL = 'SafeClick <salahaldbyby00@gmail.com>'
+EMAIL_HOST_USER = 'safeclicK17@gmail.com'
+EMAIL_HOST_PASSWORD = 'jczy igib ztum ahku'
+DEFAULT_FROM_EMAIL = 'SafeClick <safeclick17@gmail.com>'
 
 # ========== Logging ==========
 LOGS_DIR = BASE_DIR / 'logs'
